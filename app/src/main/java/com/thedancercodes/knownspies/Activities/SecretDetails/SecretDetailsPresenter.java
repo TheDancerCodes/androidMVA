@@ -3,6 +3,7 @@ package com.thedancercodes.knownspies.Activities.SecretDetails;
 import android.view.View;
 import com.thedancercodes.knownspies.Helpers.Threading;
 import com.thedancercodes.knownspies.ModelLayer.Database.Realm.Spy;
+import com.thedancercodes.knownspies.ModelLayer.ModelLayer;
 import io.realm.Realm;
 import java.util.function.Consumer;
 
@@ -12,14 +13,14 @@ import java.util.function.Consumer;
 
 class SecretDetailsPresenter {
 
-  private Realm realm = Realm.getDefaultInstance();
+  private ModelLayer modelLayer = new ModelLayer();
 
   private Spy spy;
   public String password;
 
   // Constructor
   public SecretDetailsPresenter(int spyId) {
-    spy = getSpy(spyId);
+    spy = modelLayer.spyForId(spyId);
 
     password = spy.password;
   }
@@ -33,13 +34,4 @@ class SecretDetailsPresenter {
       finished.accept(password);
     });
   }
-
-  //region Data loading
-  public Spy getSpy(int id) {
-    Spy tempSpy = realm.where(Spy.class).equalTo("id", id).findFirst();
-    return realm.copyFromRealm(tempSpy);
-  }
-  //endregion
-
-
 }

@@ -3,6 +3,7 @@ package com.thedancercodes.knownspies.Activities.Details;
 import android.content.Context;
 import com.thedancercodes.knownspies.Helpers.Helper;
 import com.thedancercodes.knownspies.ModelLayer.Database.Realm.Spy;
+import com.thedancercodes.knownspies.ModelLayer.ModelLayer;
 import io.realm.Realm;
 
 /**
@@ -11,8 +12,10 @@ import io.realm.Realm;
 
 class SpyDetailsPresenter {
 
-  // Instance to a Realm Object
-  private Realm realm = Realm.getDefaultInstance();
+  // Instance of the ModelLayer
+  ModelLayer modelLayer = new ModelLayer();
+
+  Spy spy;
 
   // Its the job of the Presenter to provide the data in the shape that the View Controller needs.
   public int spyId;
@@ -27,7 +30,12 @@ class SpyDetailsPresenter {
   public SpyDetailsPresenter(int spyId) {
     this.spyId = spyId;
 
-    Spy spy = getSpy(spyId);
+    spy = modelLayer.spyForId(spyId);
+
+    configureSpy();
+  }
+
+  private void configureSpy() {
     age = String.valueOf(spy.age);
     name = spy.name;
     gender = spy.gender;
@@ -40,14 +48,4 @@ class SpyDetailsPresenter {
     imageId = Helper.resourceIdWith(context, imageName);
 
   }
-
-  //region Data loading
-
-  private Spy getSpy(int id) {
-    Spy tempSpy = realm.where(Spy.class).equalTo("id", id).findFirst();
-    return realm.copyFromRealm(tempSpy);
-  }
-
-  //endregion
-
 }
