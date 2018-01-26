@@ -1,11 +1,14 @@
 package com.thedancercodes.knownspies.ModelLayer.DTOs;
 
+import com.thedancercodes.knownspies.ModelLayer.Enums.DTOType;
 import com.thedancercodes.knownspies.ModelLayer.Enums.Gender;
 
 import java.util.Random;
 
 
 public class SpyDTO {
+
+    public static DTOType dtoType = DTOType.spy;
 
     public int id;
     public int age;

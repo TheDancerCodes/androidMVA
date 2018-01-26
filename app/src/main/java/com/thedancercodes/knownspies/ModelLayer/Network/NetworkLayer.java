@@ -31,15 +31,6 @@ public class NetworkLayer {
     Threading.async(() -> makeRequest(), finished, null);
   }
 
-  @Nullable
-  private List<SpyDTO> convertJson(String json) {
-    Log.d(TAG, "converting json to dtos");
-
-    TypeToken<List<SpyDTO>> token = new TypeToken<List<SpyDTO>>(){};
-
-    return gson.fromJson(json, token.getType());
-  }
-
   private String makeRequest() {
     String result = "";
     try {
