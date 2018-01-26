@@ -57,4 +57,8 @@ public class ModelLayer {
       return true;
     });
   }
+
+  public Spy spyForId(int spyId) {
+    return dataLayer.spyForId(spyId);
+  }
 }
