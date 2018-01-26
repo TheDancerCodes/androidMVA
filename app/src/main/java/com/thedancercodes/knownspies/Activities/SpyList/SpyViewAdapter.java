@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.thedancercodes.knownspies.Helpers.CustomItemClickListener;
+import com.thedancercodes.knownspies.ModelLayer.DTOs.SpyDTO;
 import com.thedancercodes.knownspies.ModelLayer.Database.Realm.Spy;
 import com.thedancercodes.knownspies.R;
 
@@ -14,10 +15,10 @@ import java.util.List;
 
 public class SpyViewAdapter extends RecyclerView.Adapter<SpyViewHolder> {
 
-    List<Spy> spies;
+    List<SpyDTO> spies;
     CustomItemClickListener listener;
 
-    public SpyViewAdapter(List<Spy> spies, CustomItemClickListener listener) {
+    public SpyViewAdapter(List<SpyDTO> spies, CustomItemClickListener listener) {
         this.spies = spies;
         this.listener = listener;
     }
@@ -36,7 +37,7 @@ public class SpyViewAdapter extends RecyclerView.Adapter<SpyViewHolder> {
 
     @Override
     public void onBindViewHolder(SpyViewHolder holder, int index) {
-        Spy spy = spies.get(index);
+        SpyDTO spy = spies.get(index);
         holder.configureWith(spy);
     }
 

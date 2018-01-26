@@ -2,6 +2,7 @@ package com.thedancercodes.knownspies.Activities.SecretDetails;
 
 import android.view.View;
 import com.thedancercodes.knownspies.Helpers.Threading;
+import com.thedancercodes.knownspies.ModelLayer.DTOs.SpyDTO;
 import com.thedancercodes.knownspies.ModelLayer.Database.Realm.Spy;
 import com.thedancercodes.knownspies.ModelLayer.ModelLayer;
 import io.realm.Realm;
@@ -15,7 +16,7 @@ class SecretDetailsPresenter {
 
   private ModelLayer modelLayer = new ModelLayer();
 
-  private Spy spy;
+  private SpyDTO spy;
   public String password;
 
   // Constructor

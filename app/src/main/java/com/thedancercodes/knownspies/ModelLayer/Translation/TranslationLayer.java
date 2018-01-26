@@ -4,7 +4,9 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.thedancercodes.knownspies.ModelLayer.DTOs.SpyDTO;
+import com.thedancercodes.knownspies.ModelLayer.Database.Realm.Spy;
 import com.thedancercodes.knownspies.ModelLayer.Enums.DTOType;
+import io.realm.Realm;
 import java.util.List;
 
 /**
@@ -37,5 +39,15 @@ public class TranslationLayer {
       default:
         return spyTranslator;
     }
+  }
+
+  public SpyDTO translate(Spy spy) {
+    SpyDTO dto = spyTranslator.translate(spy);
+    return dto;
+  }
+
+  public Spy translate(SpyDTO dto, Realm realm) {
+    Spy spy = spyTranslator.translate(dto, realm);
+    return spy;
   }
 }

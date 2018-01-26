@@ -2,7 +2,7 @@ package com.thedancercodes.knownspies.Activities.Details;
 
 import android.content.Context;
 import com.thedancercodes.knownspies.Helpers.Helper;
-import com.thedancercodes.knownspies.ModelLayer.Database.Realm.Spy;
+import com.thedancercodes.knownspies.ModelLayer.DTOs.SpyDTO;
 import com.thedancercodes.knownspies.ModelLayer.ModelLayer;
 import io.realm.Realm;
 
@@ -15,8 +15,6 @@ class SpyDetailsPresenter {
   // Instance of the ModelLayer
   ModelLayer modelLayer = new ModelLayer();
 
-  Spy spy;
-
   // Its the job of the Presenter to provide the data in the shape that the View Controller needs.
   public int spyId;
   public String age;
@@ -26,6 +24,7 @@ class SpyDetailsPresenter {
   public int imageId;
 
   private Context context;
+  private SpyDTO spy;
 
   public SpyDetailsPresenter(int spyId) {
     this.spyId = spyId;
@@ -38,7 +37,7 @@ class SpyDetailsPresenter {
   private void configureSpy() {
     age = String.valueOf(spy.age);
     name = spy.name;
-    gender = spy.gender;
+    gender = spy.gender.name();
     imageName = spy.imageName;
   }
 

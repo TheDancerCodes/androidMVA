@@ -37,7 +37,7 @@ public class SpyListActivity extends AppCompatActivity {
     private static final String TAG = "SpyListActivity";
 
     private SpyListPresenter presenter = new SpyListPresenter();
-    private List<Spy> spies = new ArrayList<>();
+    private List<SpyDTO> spies = new ArrayList<>();
     private RecyclerView recyclerView;
 
 
@@ -84,7 +84,7 @@ public class SpyListActivity extends AppCompatActivity {
     //region User Interaction
 
     private void rowTapped(int position) {
-        Spy spy = spies.get(position);
+        SpyDTO spy = spies.get(position);
         gotoSpyDetails(spy.id);
     }
 

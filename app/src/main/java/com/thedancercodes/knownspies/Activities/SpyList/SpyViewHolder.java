@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.thedancercodes.knownspies.Helpers.Helper;
+import com.thedancercodes.knownspies.ModelLayer.DTOs.SpyDTO;
 import com.thedancercodes.knownspies.ModelLayer.Database.Realm.Spy;
 import com.thedancercodes.knownspies.R;
 
@@ -29,7 +30,7 @@ public class SpyViewHolder extends RecyclerView.ViewHolder {
         this.personPhoto = (ImageView) itemView.findViewById(R.id.person_photo);
     }
 
-    public void configureWith(Spy spy) {
+    public void configureWith(SpyDTO spy) {
         int imageId = Helper.resourceIdWith(context, spy.imageName);
         String age = String.valueOf(spy.age);
 

@@ -24,11 +24,14 @@ public class ModelLayer {
   private DataLayer dataLayer = new DataLayer();
   private TranslationLayer translationLayer = new TranslationLayer();
 
-  public void loadData(Consumer<List<Spy>> onNewResults, Consumer<Source> notifyDataReceived) {
+  public void loadData(Consumer<List<SpyDTO>> onNewResults, Consumer<Source> notifyDataReceived) {
+
+    // Translator for the SpyDTO that we are passing in
+    SpyTranslator translator = translationLayer.translatorFor(SpyDTO.dtoType);
 
     // load from local DB
     try {
-      dataLayer.loadSpiesFromLocal(onNewResults);
+      dataLayer.loadSpiesFromLocal(translator::translate, onNewResults);
       notifyDataReceived.accept(Source.local);
     } catch (Exception e) {
       e.printStackTrace();
@@ -37,8 +40,14 @@ public class ModelLayer {
     // load from network
     networkLayer.loadJson(json -> {
       notifyDataReceived.accept(Source.network);
-      persistJson(json, () -> dataLayer.loadSpiesFromLocal(onNewResults));
+      persistJson(json, () -> dataLayer.loadSpiesFromLocal(translator::translate, onNewResults));
     });
+  }
+
+  public SpyDTO spyForId(int spyId) {
+    Spy spy = dataLayer.spyForId(spyId);
+    SpyDTO spyDTO = translationLayer.translate(spy);
+    return spyDTO;
   }
 
   private void persistJson(String json, Action finished) {
@@ -50,15 +59,11 @@ public class ModelLayer {
         dtos.forEach(dto -> dto.initialize()); // Sets up the image id from the image name.
 
         SpyTranslator translator = translationLayer.translatorFor(SpyDTO.dtoType);
-        dataLayer.persistDTOs(dtos, translator);
+        dataLayer.persistDTOs(dtos, translator::translate);
 
         Threading.dispatchMain(() -> finished.run());
       });
       return true;
     });
-  }
-
-  public Spy spyForId(int spyId) {
-    return dataLayer.spyForId(spyId);
   }
 }

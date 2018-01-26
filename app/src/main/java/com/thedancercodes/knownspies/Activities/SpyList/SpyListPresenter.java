@@ -36,7 +36,7 @@ public class SpyListPresenter {
   // region Presenter methods
 
   // provide a way to oad the data a layer on up
-  public void loadData(Consumer<List<Spy>> onNewResults, Consumer<Source> notifyDataReceived) {
+  public void loadData(Consumer<List<SpyDTO>> onNewResults, Consumer<Source> notifyDataReceived) {
 
     modelLayer.loadData(onNewResults, notifyDataReceived);
 
