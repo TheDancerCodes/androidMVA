@@ -20,9 +20,16 @@ import java.util.List;
 public class ModelLayer {
 
   // Instances of the other layers
-  private NetworkLayer networkLayer = new NetworkLayer();
-  private DataLayer dataLayer = new DataLayer();
-  private TranslationLayer translationLayer = new TranslationLayer();
+  private NetworkLayer networkLayer;
+  private DataLayer dataLayer;
+  private TranslationLayer translationLayer;
+
+  public ModelLayer(NetworkLayer networkLayer, DataLayer dataLayer,
+      TranslationLayer translationLayer) {
+    this.networkLayer = networkLayer;
+    this.dataLayer = dataLayer;
+    this.translationLayer = translationLayer;
+  }
 
   public void loadData(Consumer<List<SpyDTO>> onNewResults, Consumer<Source> notifyDataReceived) {
 

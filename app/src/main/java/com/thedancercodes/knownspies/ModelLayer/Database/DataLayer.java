@@ -13,6 +13,7 @@ import io.reactivex.functions.Function;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 /**
  * Created by TheDancerCodes on 25/01/2018.
@@ -23,8 +24,14 @@ public class DataLayer {
   private static final String TAG = "DataLayer";
 
   // Realm instance
-  private Realm realm = Realm.getDefaultInstance();
+  private Realm realm;
 
+  private Callable<Realm> newRealmInstanceOnCurrentThread;
+
+  public DataLayer(Realm realm, Callable<Realm> newRealmInstanceOnCurrentThread) {
+    this.realm = realm;
+    this.newRealmInstanceOnCurrentThread = newRealmInstanceOnCurrentThread;
+  }
 
   //region Database Methods
 
@@ -61,8 +68,9 @@ public class DataLayer {
   public void clearSpies(Action finished) throws Exception {
     Log.d(TAG, "clearing DB");
 
-    Realm backgroundRealm = Realm.getInstance(realm.getConfiguration());
+    Realm backgroundRealm = newRealmInstanceOnCurrentThread.call();
     backgroundRealm.executeTransaction(r -> r.delete(Spy.class));
+    backgroundRealm.close();
 
     finished.run();
   }
@@ -70,11 +78,15 @@ public class DataLayer {
   public void persistDTOs(List<SpyDTO> dtos, BiFunction<SpyDTO, Realm, Spy> translationBlock) {
     Log.d(TAG, "persisting dtos to DB");
 
-    Realm backgroundRealm = Realm.getInstance(realm.getConfiguration());
-    backgroundRealm.executeTransaction(r -> r.delete(Spy.class));
+    try {
+      Realm backgroundRealm = newRealmInstanceOnCurrentThread.call();
 
-    //ignore result and just save in realm
-    dtos.forEach(dto -> convertToSpy(translationBlock, backgroundRealm, dto));
+      //ignore result and just save in realm
+      dtos.forEach(dto -> convertToSpy(translationBlock, backgroundRealm, dto));
+      backgroundRealm.close();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   private void convertToSpy(BiFunction<SpyDTO, Realm, Spy> translationBlock, Realm backgroundRealm,

@@ -17,9 +17,15 @@ public class TranslationLayer {
 
   private static final String TAG = "TranslationLayer";
 
-  private Gson gson = new Gson();
+  private Gson gson;
 
-  private SpyTranslator spyTranslator = new SpyTranslator();
+  private SpyTranslator spyTranslator;
+
+  // Constructor
+  public TranslationLayer(Gson gson, SpyTranslator spyTranslator) {
+    this.gson = gson;
+    this.spyTranslator = spyTranslator;
+  }
 
   public List<SpyDTO> convertJson(String json) {
     Log.d(TAG, "converting JSON to DTOs");
