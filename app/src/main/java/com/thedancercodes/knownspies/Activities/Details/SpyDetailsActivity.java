@@ -32,15 +32,6 @@ public class SpyDetailsActivity extends AppCompatActivity {
         DependencyRegistry.shared.inject(this, bundle);
     }
 
-    // When we are given the Presenter, we set up from it
-    public void configure(SpyDetailsPresenter presenter) {
-        this.presenter = presenter;
-
-        // Helps us get IDs to show the image
-        this.presenter.configureWithContext(this);
-    }
-
-
     //region UI Methods
 
     private void attachUI(){

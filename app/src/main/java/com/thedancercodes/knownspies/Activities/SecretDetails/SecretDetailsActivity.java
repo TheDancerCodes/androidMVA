@@ -9,6 +9,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.thedancercodes.knownspies.Activities.SpyList.SpyListActivity;
+import com.thedancercodes.knownspies.Dependencies.DependencyRegistry;
 import com.thedancercodes.knownspies.Helpers.Constants;
 import com.thedancercodes.knownspies.Helpers.Threading;
 import com.thedancercodes.knownspies.ModelLayer.Database.Realm.Spy;
@@ -30,14 +31,17 @@ public class SecretDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_secret_details);
 
         attachUI();
-        parseBundle();
+
+         // Add Dependency Registry
+        Bundle bundle = getIntent().getExtras();
+        DependencyRegistry.shared.inject(this, bundle);
     }
 
     // Set up the UI according to when we get a SecretDetailsPresenter
-    public void configure(SecretDetailsPresenter presenter) {
+    public void configureWith(SecretDetailsPresenter presenter) {
         this.presenter = presenter;
 
-        presenter.crackPassword(password -> {
+        this.presenter.crackPassword(password -> {
           progressBar.setVisibility(View.GONE);
           crackingLabel.setText(presenter.password);
         });
@@ -53,24 +57,6 @@ public class SecretDetailsActivity extends AppCompatActivity {
         finishedButton.setOnClickListener(v -> finishedClicked());
 
     }
-
-  //region Helper Method
-  private void setupPresenterFor(int spyId) {
-      configure(new SecretDetailsPresenter(spyId));
-  }
-  //endregion
-
-
-    private void parseBundle() {
-        Bundle b = getIntent().getExtras();
-
-        if(b != null) {
-          int spyId = b.getInt(Constants.spyIdKey);
-          setupPresenterFor(spyId);
-        }
-    }
-
-    //endregion
 
     //region User Interaction
 

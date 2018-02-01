@@ -77,6 +77,7 @@ public class DependencyRegistry {
     int spyId = idFromBundle(bundle);
 
     SecretDetailsPresenter presenter = new SecretDetailsPresenter(spyId, modelLayer);
+    activity.configureWith(presenter);
   }
 
   public void inject(SpyListActivity activity)  {
