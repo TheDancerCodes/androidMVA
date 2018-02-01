@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.thedancercodes.knownspies.Activities.Details.SpyDetailsActivity;
+import com.thedancercodes.knownspies.Dependencies.DependencyRegistry;
 import com.thedancercodes.knownspies.Helpers.Constants;
 import com.thedancercodes.knownspies.Helpers.Threading;
 import com.thedancercodes.knownspies.ModelLayer.DTOs.SpyDTO;
@@ -36,7 +37,7 @@ public class SpyListActivity extends AppCompatActivity {
 
     private static final String TAG = "SpyListActivity";
 
-    private SpyListPresenter presenter = new SpyListPresenter();
+    private SpyListPresenter presenter;
     private List<SpyDTO> spies = new ArrayList<>();
     private RecyclerView recyclerView;
 
@@ -50,9 +51,19 @@ public class SpyListActivity extends AppCompatActivity {
         // Gets RecyclerView and sets it up for us
         attachUI();
 
+        DependencyRegistry.shared.inject(this);
+    }
+
+    //region Injection Methods
+
+    public void configureWith(SpyListPresenter presenter) {
+        this.presenter = presenter;
+
         // Initializes the list view and the data.
         loadData();
     }
+
+    //endregion
 
     //region Helper Methods
     private void attachUI() {
@@ -69,14 +80,19 @@ public class SpyListActivity extends AppCompatActivity {
     //endregion
 
     //region Data Process specific to SpyListActivity
+
     private void loadData() {
-        presenter.loadData(spies -> {
+        presenter.loadData(this::spiesUpdated, this::onDataReceived);
+
+    }
+
+
+    private void spiesUpdated(List<SpyDTO> spies) {
             this.spies = spies;
 
             SpyViewAdapter adapter = (SpyViewAdapter) recyclerView.getAdapter();
             adapter.spies = this.spies;
             adapter.notifyDataSetChanged();
-        }, this::notifyDataReceived);
     }
 
     //endregion
@@ -88,7 +104,7 @@ public class SpyListActivity extends AppCompatActivity {
         gotoSpyDetails(spy.id);
     }
 
-    private void notifyDataReceived(Source source) {
+    private void onDataReceived(Source source) {
         String message = String.format("Data from %s", source.name());
         Toast.makeText(SpyListActivity.this, message, Toast.LENGTH_SHORT).show();
     }
@@ -117,6 +133,6 @@ public class SpyListActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    //endregion
+  //endregion
 
 }

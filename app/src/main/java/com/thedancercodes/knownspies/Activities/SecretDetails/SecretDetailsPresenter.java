@@ -14,20 +14,27 @@ import java.util.function.Consumer;
 
 public class SecretDetailsPresenter {
 
-  private ModelLayer modelLayer = new ModelLayer();
-
-  private SpyDTO spy;
   public String password;
 
-  // Constructor
-  public SecretDetailsPresenter(int spyId) {
-    spy = modelLayer.spyForId(spyId);
+  private int spyId;
+  private SpyDTO spy;
+  private ModelLayer modelLayer;
 
+  // Constructor
+  public SecretDetailsPresenter(int spyId, ModelLayer modelLayer) {
+    this.spyId = spyId;
+    this.modelLayer = modelLayer;
+
+    configureData();
+  }
+
+  private void configureData() {
+    spy = this.modelLayer.spyForId(spyId);
     password = spy.password;
   }
 
   public void crackPassword(Consumer<String> finished) {
-    Threading.async(()-> {
+    Threading.async(() -> {
       //fake processing work
       Thread.sleep(2000);
       return true;

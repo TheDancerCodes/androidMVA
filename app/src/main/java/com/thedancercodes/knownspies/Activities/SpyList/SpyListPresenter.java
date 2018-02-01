@@ -28,10 +28,14 @@ public class SpyListPresenter {
 
   private static final String TAG = "SpyListPresenter";
 
-  // Instance of the ModelLayer
-  ModelLayer modelLayer = new ModelLayer();
+  // ModelLayer Variable
+  ModelLayer modelLayer;
 
   private Realm realm = Realm.getDefaultInstance();
+
+  public SpyListPresenter(ModelLayer modelLayer) {
+    this.modelLayer = modelLayer;
+  }
 
   // region Presenter methods
 

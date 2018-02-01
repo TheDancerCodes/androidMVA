@@ -4,6 +4,10 @@ import android.os.Bundle;
 import com.google.gson.Gson;
 import com.thedancercodes.knownspies.Activities.Details.SpyDetailsActivity;
 import com.thedancercodes.knownspies.Activities.Details.SpyDetailsPresenter;
+import com.thedancercodes.knownspies.Activities.SecretDetails.SecretDetailsActivity;
+import com.thedancercodes.knownspies.Activities.SecretDetails.SecretDetailsPresenter;
+import com.thedancercodes.knownspies.Activities.SpyList.SpyListActivity;
+import com.thedancercodes.knownspies.Activities.SpyList.SpyListPresenter;
 import com.thedancercodes.knownspies.Helpers.Constants;
 import com.thedancercodes.knownspies.ModelLayer.Database.DataLayer;
 import com.thedancercodes.knownspies.ModelLayer.ModelLayer;
@@ -60,13 +64,27 @@ public class DependencyRegistry {
 
   //endregion
 
+  //region Injection Methods
+
   public void inject(SpyDetailsActivity activity, Bundle bundle) throws NoSuchElementException {
     int spyId = idFromBundle(bundle);
 
-    SpyDetailsPresenter presenter = new SpyDetailsPresenter(spyId);
+    SpyDetailsPresenter presenter = new SpyDetailsPresenter(spyId, activity, modelLayer);
     activity.configureWith(presenter);
-
   }
+
+  public void inject(SecretDetailsActivity activity, Bundle bundle) throws NoSuchElementException {
+    int spyId = idFromBundle(bundle);
+
+    SecretDetailsPresenter presenter = new SecretDetailsPresenter(spyId, modelLayer);
+  }
+
+  public void inject(SpyListActivity activity)  {
+    SpyListPresenter presenter = new SpyListPresenter(modelLayer);
+    activity.configureWith(presenter);
+  }
+
+  //endregion
 
   //region Helper Methods
 

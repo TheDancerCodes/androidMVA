@@ -12,9 +12,6 @@ import io.realm.Realm;
 
 public class SpyDetailsPresenter {
 
-  // Instance of the ModelLayer
-  ModelLayer modelLayer = new ModelLayer();
-
   // Its the job of the Presenter to provide the data in the shape that the View Controller needs.
   public int spyId;
   public String age;
@@ -23,28 +20,27 @@ public class SpyDetailsPresenter {
   public String imageName;
   public int imageId;
 
-  private Context context;
   private SpyDTO spy;
+  private Context context;
+  private ModelLayer modelLayer;   // Instance of the ModelLayer
 
-  public SpyDetailsPresenter(int spyId) {
+  // Initialise variables in this Constructor.
+  public SpyDetailsPresenter(int spyId, Context context, ModelLayer modelLayer) {
     this.spyId = spyId;
+    this.context = context;
+    this.modelLayer = modelLayer;
 
-    spy = modelLayer.spyForId(spyId);
-
-    configureSpy();
+    configureData();
   }
 
-  private void configureSpy() {
+  private void configureData() {
+    spy = modelLayer.spyForId(spyId);
+
     age = String.valueOf(spy.age);
     name = spy.name;
     gender = spy.gender.name();
     imageName = spy.imageName;
-  }
-
-  public void configureWithContext(Context context) {
-    this.context = context;
 
     imageId = Helper.resourceIdWith(context, imageName);
-
   }
 }
