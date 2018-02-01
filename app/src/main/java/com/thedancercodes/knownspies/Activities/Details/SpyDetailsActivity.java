@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.thedancercodes.knownspies.Activities.SecretDetails.SecretDetailsActivity;
+import com.thedancercodes.knownspies.Dependencies.DependencyRegistry;
 import com.thedancercodes.knownspies.Helpers.Constants;
 import com.thedancercodes.knownspies.R;
 
@@ -25,7 +26,10 @@ public class SpyDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_spy_details);
         attachUI();
-        parseBundle();
+
+        // Add Dependency Registry
+        Bundle bundle = getIntent().getExtras();
+        DependencyRegistry.shared.inject(this, bundle);
     }
 
     // When we are given the Presenter, we set up from it
@@ -48,41 +52,27 @@ public class SpyDetailsActivity extends AppCompatActivity {
         calculateButton.setOnClickListener(v -> gotoSecretDetails());
     }
 
+    // endregion
 
-    private void configureUIWith(SpyDetailsPresenter presenter) {
+    //region Injection Methods
+
+    public void configureWith(SpyDetailsPresenter presenter) {
+        this.presenter = presenter;
+
         ageTextView.setText(presenter.age);
         nameTextView.setText(presenter.name);
         genderTextView.setText(presenter.gender);
         profileImage.setImageResource(presenter.imageId);
-    }
 
-    // endregion
-
-    //region Dependency Methods
-
-    // When an ID is passed in, we will do some injection stuff here
-    private void getPresenterFor(int spyId) {
-        configure(new SpyDetailsPresenter(spyId));
     }
 
     //endregion
-
-    // region Navigation
-    private void parseBundle() {
-        Bundle b = getIntent().getExtras();
-
-        if(b != null) {
-            int spyId = b.getInt(Constants.spyIdKey);
-            getPresenterFor(spyId);
-        }
-    }
-
-    //endregion
-
 
     //region navigation
 
     private void gotoSecretDetails() {
+        if (presenter == null) return;
+
         Bundle bundle = new Bundle();
                bundle.putInt(Constants.spyIdKey, presenter.spyId);
 
@@ -92,5 +82,5 @@ public class SpyDetailsActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    //endregion
+  //endregion
 }

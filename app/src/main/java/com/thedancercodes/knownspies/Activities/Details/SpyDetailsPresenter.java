@@ -10,7 +10,7 @@ import io.realm.Realm;
  * Created by TheDancerCodes on 23/01/2018.
  */
 
-class SpyDetailsPresenter {
+public class SpyDetailsPresenter {
 
   // Instance of the ModelLayer
   ModelLayer modelLayer = new ModelLayer();

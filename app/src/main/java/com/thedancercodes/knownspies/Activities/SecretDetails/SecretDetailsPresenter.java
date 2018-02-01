@@ -12,7 +12,7 @@ import java.util.function.Consumer;
  * Created by TheDancerCodes on 23/01/2018.
  */
 
-class SecretDetailsPresenter {
+public class SecretDetailsPresenter {
 
   private ModelLayer modelLayer = new ModelLayer();
 

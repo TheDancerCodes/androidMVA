@@ -1,12 +1,17 @@
 package com.thedancercodes.knownspies.Dependencies;
 
+import android.os.Bundle;
 import com.google.gson.Gson;
+import com.thedancercodes.knownspies.Activities.Details.SpyDetailsActivity;
+import com.thedancercodes.knownspies.Activities.Details.SpyDetailsPresenter;
+import com.thedancercodes.knownspies.Helpers.Constants;
 import com.thedancercodes.knownspies.ModelLayer.Database.DataLayer;
 import com.thedancercodes.knownspies.ModelLayer.ModelLayer;
 import com.thedancercodes.knownspies.ModelLayer.Network.NetworkLayer;
 import com.thedancercodes.knownspies.ModelLayer.Translation.SpyTranslator;
 import com.thedancercodes.knownspies.ModelLayer.Translation.TranslationLayer;
 import io.realm.Realm;
+import java.util.NoSuchElementException;
 
 /**
  * Created by TheDancerCodes on 26/01/2018.
@@ -51,6 +56,26 @@ public class DependencyRegistry {
 
   private ModelLayer createModelLayer() {
     return new ModelLayer(networkLayer, dataLayer, translationLayer);
+  }
+
+  //endregion
+
+  public void inject(SpyDetailsActivity activity, Bundle bundle) throws NoSuchElementException {
+    int spyId = idFromBundle(bundle);
+
+    SpyDetailsPresenter presenter = new SpyDetailsPresenter(spyId);
+    activity.configureWith(presenter);
+
+  }
+
+  //region Helper Methods
+
+  private int idFromBundle(Bundle bundle) {
+    if (bundle == null) throw new NoSuchElementException("Unable to get spy id from bundle");
+
+    int spyId = bundle.getInt(Constants.spyIdKey);
+    if (spyId == 0) throw new NoSuchElementException("Unable to get spy id from bundle");
+    return spyId;
   }
 
   //endregion
