@@ -23,4 +23,6 @@ public interface DataLayer {
 
   // To load spy within the other presenters
   Spy spyForId(int spyId);
+
+  Spy spyForName(String name);
 }

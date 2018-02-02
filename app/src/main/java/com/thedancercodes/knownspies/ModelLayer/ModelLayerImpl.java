@@ -51,24 +51,46 @@ public class ModelLayerImpl implements ModelLayer {
     });
   }
 
-  @Override public SpyDTO spyForId(int spyId) {
+  @Override
+  public SpyDTO spyForId(int spyId) {
     Spy spy = dataLayer.spyForId(spyId);
     SpyDTO spyDTO = translationLayer.translate(spy);
     return spyDTO;
+  }
+
+  @Override
+  public SpyDTO spyForName(String name) {
+    Spy spy = dataLayer.spyForName(name);
+    SpyDTO spyDTO = translationLayer.translate(spy);
+    return spyDTO;
+  }
+
+  @Override
+  public void save(List<SpyDTO> dtos, Action finished) {
+    Threading.async(() -> {
+      persistDTOs(dtos, finished);
+      return true;
+    });
+  }
+
+  private void persistDTOs(List<SpyDTO> dtos, Action finished) {
+
+    SpyTranslator translator = translationLayer.translatorFor(SpyDTO.dtoType);
+    dataLayer.persistDTOs(dtos, translator::translate);
+
+    Threading.dispatchMain(() -> finished.run());
   }
 
   private void persistJson(String json, Action finished) {
     List<SpyDTO> dtos = translationLayer.convertJson(json);
 
     // Use Threading lib to trigger the block on another thread.
-    Threading.async(()->{
+    Threading.async(() -> {
       dataLayer.clearSpies(() -> {
         dtos.forEach(dto -> dto.initialize()); // Sets up the image id from the image name.
 
-        SpyTranslator translator = translationLayer.translatorFor(SpyDTO.dtoType);
-        dataLayer.persistDTOs(dtos, translator::translate);
+        persistDTOs(dtos, finished);
 
-        Threading.dispatchMain(() -> finished.run());
       });
       return true;
     });

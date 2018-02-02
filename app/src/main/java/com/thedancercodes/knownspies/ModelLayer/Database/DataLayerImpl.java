@@ -107,4 +107,8 @@ public class DataLayerImpl implements DataLayer {
     return realm.copyFromRealm(tempSpy);
   }
 
+  @Override public Spy spyForName(String name) {
+    Spy tempSpy = realm.where(Spy.class).equalTo("name", name).findFirst();
+    return realm.copyFromRealm(tempSpy);
+  }
 }
