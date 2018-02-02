@@ -1,38 +1,20 @@
 package com.thedancercodes.knownspies.Activities.SpyList;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.widget.Button;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.thedancercodes.knownspies.Activities.Details.SpyDetailsActivity;
 import com.thedancercodes.knownspies.Coordinators.RootCoordinator;
 import com.thedancercodes.knownspies.Dependencies.DependencyRegistry;
-import com.thedancercodes.knownspies.Helpers.Constants;
-import com.thedancercodes.knownspies.Helpers.Threading;
 import com.thedancercodes.knownspies.ModelLayer.DTOs.SpyDTO;
-import com.thedancercodes.knownspies.ModelLayer.Database.Realm.Spy;
 import com.thedancercodes.knownspies.ModelLayer.Enums.Source;
-import com.thedancercodes.knownspies.ModelLayer.Translation.SpyTranslator;
 import com.thedancercodes.knownspies.R;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import io.reactivex.functions.Action;
-import io.reactivex.functions.Consumer;
-import io.realm.Realm;
-import io.realm.RealmResults;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 public class SpyListActivity extends AppCompatActivity {
 
@@ -40,7 +22,6 @@ public class SpyListActivity extends AppCompatActivity {
 
     private SpyListPresenter presenter;
     private RootCoordinator coordinator;
-    private List<SpyDTO> spies = new ArrayList<>();
     private RecyclerView recyclerView;
 
 
@@ -64,12 +45,27 @@ public class SpyListActivity extends AppCompatActivity {
 
         // Initializes the list view and the data.
         loadData();
+
+        // Setup Observables
+        setupObservables();
+    }
+
+    private void setupObservables() {
+        presenter.spies().subscribe(spies -> {
+            SpyViewAdapter adapter = (SpyViewAdapter) recyclerView.getAdapter();
+            adapter.setSpies(spies);
+        });
     }
 
     //endregion
 
     //region Helper Methods
     private void attachUI() {
+
+        // Set the Button
+        Button newSpyButton = (Button) findViewById(R.id.new_spy_button);
+        newSpyButton.setOnClickListener(v -> presenter.addNewSpy());
+
         LinearLayoutManager manager = new LinearLayoutManager(this);
 
         recyclerView = (RecyclerView) findViewById(R.id.spy_recycler_view);
@@ -85,17 +81,7 @@ public class SpyListActivity extends AppCompatActivity {
     //region Data Process specific to SpyListActivity
 
     private void loadData() {
-        presenter.loadData(this::spiesUpdated, this::onDataReceived);
-
-    }
-
-
-    private void spiesUpdated(List<SpyDTO> spies) {
-            this.spies = spies;
-
-            SpyViewAdapter adapter = (SpyViewAdapter) recyclerView.getAdapter();
-            adapter.spies = this.spies;
-            adapter.notifyDataSetChanged();
+        presenter.loadData(this::onDataReceived);
     }
 
     //endregion
@@ -103,7 +89,7 @@ public class SpyListActivity extends AppCompatActivity {
     //region User Interaction
 
     private void rowTapped(int position) {
-        SpyDTO spy = spies.get(position);
+        SpyDTO spy = presenter.spies().getValue().get(position);
         gotoSpyDetails(spy.id);
     }
 
@@ -117,7 +103,7 @@ public class SpyListActivity extends AppCompatActivity {
     //region List View Adapter
 
     private void initializeListView() {
-        SpyViewAdapter adapter = new SpyViewAdapter(spies, (v, position) -> rowTapped(position));
+        SpyViewAdapter adapter = new SpyViewAdapter((v, position) -> rowTapped(position));
         recyclerView.setAdapter(adapter);
     }
 

@@ -10,15 +10,16 @@ import com.thedancercodes.knownspies.ModelLayer.DTOs.SpyDTO;
 import com.thedancercodes.knownspies.ModelLayer.Database.Realm.Spy;
 import com.thedancercodes.knownspies.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
 public class SpyViewAdapter extends RecyclerView.Adapter<SpyViewHolder> {
 
-    List<SpyDTO> spies;
+    List<SpyDTO> spies = new ArrayList<>();
     CustomItemClickListener listener;
 
-    public SpyViewAdapter(List<SpyDTO> spies, CustomItemClickListener listener) {
+    public SpyViewAdapter(CustomItemClickListener listener) {
         this.spies = spies;
         this.listener = listener;
     }
@@ -44,5 +45,11 @@ public class SpyViewAdapter extends RecyclerView.Adapter<SpyViewHolder> {
     @Override
     public int getItemCount() {
         return spies.size();
+    }
+
+    // A way for people to set the ArrayList
+    public void setSpies(List<SpyDTO> spies) {
+        this.spies = spies;
+        notifyDataSetChanged();
     }
 }
