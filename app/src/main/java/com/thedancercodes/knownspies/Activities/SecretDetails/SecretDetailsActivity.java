@@ -10,12 +10,7 @@ import android.widget.TextView;
 
 import com.thedancercodes.knownspies.Activities.SpyList.SpyListActivity;
 import com.thedancercodes.knownspies.Dependencies.DependencyRegistry;
-import com.thedancercodes.knownspies.Helpers.Constants;
-import com.thedancercodes.knownspies.Helpers.Threading;
-import com.thedancercodes.knownspies.ModelLayer.Database.Realm.Spy;
 import com.thedancercodes.knownspies.R;
-
-import io.realm.Realm;
 
 public class SecretDetailsActivity extends AppCompatActivity {
 
@@ -43,7 +38,7 @@ public class SecretDetailsActivity extends AppCompatActivity {
 
         this.presenter.crackPassword(password -> {
           progressBar.setVisibility(View.GONE);
-          crackingLabel.setText(presenter.password);
+          crackingLabel.setText(presenter.getPassword());
         });
     }
 

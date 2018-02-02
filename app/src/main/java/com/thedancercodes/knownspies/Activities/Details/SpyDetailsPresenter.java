@@ -1,46 +1,19 @@
 package com.thedancercodes.knownspies.Activities.Details;
 
-import android.content.Context;
-import com.thedancercodes.knownspies.Helpers.Helper;
-import com.thedancercodes.knownspies.ModelLayer.DTOs.SpyDTO;
-import com.thedancercodes.knownspies.ModelLayer.ModelLayer;
-import io.realm.Realm;
-
 /**
- * Created by TheDancerCodes on 23/01/2018.
+ * Created by TheDancerCodes on 02/02/2018.
  */
 
-public class SpyDetailsPresenter {
+public interface SpyDetailsPresenter {
+  int getSpyId();
 
-  // Its the job of the Presenter to provide the data in the shape that the View Controller needs.
-  public int spyId;
-  public String age;
-  public String name;
-  public String gender;
-  public String imageName;
-  public int imageId;
+  String getAge();
 
-  private SpyDTO spy;
-  private Context context;
-  private ModelLayer modelLayer;   // Instance of the ModelLayer
+  String getName();
 
-  // Initialise variables in this Constructor.
-  public SpyDetailsPresenter(int spyId, Context context, ModelLayer modelLayer) {
-    this.spyId = spyId;
-    this.context = context;
-    this.modelLayer = modelLayer;
+  String getGender();
 
-    configureData();
-  }
+  String getImageName();
 
-  private void configureData() {
-    spy = modelLayer.spyForId(spyId);
-
-    age = String.valueOf(spy.age);
-    name = spy.name;
-    gender = spy.gender.name();
-    imageName = spy.imageName;
-
-    imageId = Helper.resourceIdWith(context, imageName);
-  }
+  int getImageId();
 }

@@ -50,10 +50,10 @@ public class SpyDetailsActivity extends AppCompatActivity {
     public void configureWith(SpyDetailsPresenter presenter) {
         this.presenter = presenter;
 
-        ageTextView.setText(presenter.age);
-        nameTextView.setText(presenter.name);
-        genderTextView.setText(presenter.gender);
-        profileImage.setImageResource(presenter.imageId);
+        ageTextView.setText(presenter.getAge());
+        nameTextView.setText(presenter.getName());
+        genderTextView.setText(presenter.getGender());
+        profileImage.setImageResource(presenter.getImageId());
 
     }
 
@@ -65,7 +65,7 @@ public class SpyDetailsActivity extends AppCompatActivity {
         if (presenter == null) return;
 
         Bundle bundle = new Bundle();
-               bundle.putInt(Constants.spyIdKey, presenter.spyId);
+               bundle.putInt(Constants.spyIdKey, presenter.getSpyId());
 
         Intent intent = new Intent(SpyDetailsActivity.this, SecretDetailsActivity.class);
                intent.putExtras(bundle);

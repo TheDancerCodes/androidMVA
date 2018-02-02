@@ -4,16 +4,24 @@ import android.os.Bundle;
 import com.google.gson.Gson;
 import com.thedancercodes.knownspies.Activities.Details.SpyDetailsActivity;
 import com.thedancercodes.knownspies.Activities.Details.SpyDetailsPresenter;
+import com.thedancercodes.knownspies.Activities.Details.SpyDetailsPresenterImpl;
 import com.thedancercodes.knownspies.Activities.SecretDetails.SecretDetailsActivity;
 import com.thedancercodes.knownspies.Activities.SecretDetails.SecretDetailsPresenter;
+import com.thedancercodes.knownspies.Activities.SecretDetails.SecretDetailsPresenterImpl;
 import com.thedancercodes.knownspies.Activities.SpyList.SpyListActivity;
 import com.thedancercodes.knownspies.Activities.SpyList.SpyListPresenter;
+import com.thedancercodes.knownspies.Activities.SpyList.SpyListPresenterImpl;
 import com.thedancercodes.knownspies.Helpers.Constants;
 import com.thedancercodes.knownspies.ModelLayer.Database.DataLayer;
+import com.thedancercodes.knownspies.ModelLayer.Database.DataLayerImpl;
 import com.thedancercodes.knownspies.ModelLayer.ModelLayer;
+import com.thedancercodes.knownspies.ModelLayer.ModelLayerImpl;
 import com.thedancercodes.knownspies.ModelLayer.Network.NetworkLayer;
+import com.thedancercodes.knownspies.ModelLayer.Network.NetworkLayerImpl;
 import com.thedancercodes.knownspies.ModelLayer.Translation.SpyTranslator;
+import com.thedancercodes.knownspies.ModelLayer.Translation.SpyTranslatorImpl;
 import com.thedancercodes.knownspies.ModelLayer.Translation.TranslationLayer;
+import com.thedancercodes.knownspies.ModelLayer.Translation.TranslationLayerImpl;
 import io.realm.Realm;
 import java.util.NoSuchElementException;
 
@@ -24,9 +32,9 @@ import java.util.NoSuchElementException;
 public class DependencyRegistry {
   public static DependencyRegistry shared = new DependencyRegistry();
 
-  private Gson gson = new Gson();
+  //region External Dependencies
 
-  //region Realm
+  private Gson gson = new Gson();
 
   private Realm realm = Realm.getDefaultInstance();
 
@@ -40,26 +48,26 @@ public class DependencyRegistry {
   //region Singletons
 
   // These Singletons don’t have a shared instance
-  public SpyTranslator spyTranslator = new SpyTranslator();
+  public SpyTranslator spyTranslator = new SpyTranslatorImpl();
 
   public TranslationLayer translationLayer = createTranslationLayer();
 
   private TranslationLayer createTranslationLayer() {
-    return new TranslationLayer(gson, spyTranslator);
+    return new TranslationLayerImpl(gson, spyTranslator);
   }
 
   public DataLayer dataLayer = createDataLayer();
 
   private DataLayer createDataLayer() {
-    return new DataLayer(realm, this::newRealmInstanceOnCurrentThread);
+    return new DataLayerImpl(realm, this::newRealmInstanceOnCurrentThread);
   }
 
-  public NetworkLayer networkLayer = new NetworkLayer();
+  public NetworkLayer networkLayer = new NetworkLayerImpl();
 
   public ModelLayer modelLayer = createModelLayer();
 
   private ModelLayer createModelLayer() {
-    return new ModelLayer(networkLayer, dataLayer, translationLayer);
+    return new ModelLayerImpl(networkLayer, dataLayer, translationLayer);
   }
 
   //endregion
@@ -69,19 +77,19 @@ public class DependencyRegistry {
   public void inject(SpyDetailsActivity activity, Bundle bundle) throws NoSuchElementException {
     int spyId = idFromBundle(bundle);
 
-    SpyDetailsPresenter presenter = new SpyDetailsPresenter(spyId, activity, modelLayer);
+    SpyDetailsPresenter presenter = new SpyDetailsPresenterImpl(spyId, activity, modelLayer);
     activity.configureWith(presenter);
   }
 
   public void inject(SecretDetailsActivity activity, Bundle bundle) throws NoSuchElementException {
     int spyId = idFromBundle(bundle);
 
-    SecretDetailsPresenter presenter = new SecretDetailsPresenter(spyId, modelLayer);
+    SecretDetailsPresenter presenter = new SecretDetailsPresenterImpl(spyId, modelLayer);
     activity.configureWith(presenter);
   }
 
   public void inject(SpyListActivity activity)  {
-    SpyListPresenter presenter = new SpyListPresenter(modelLayer);
+    SpyListPresenter presenter = new SpyListPresenterImpl(modelLayer);
     activity.configureWith(presenter);
   }
 
