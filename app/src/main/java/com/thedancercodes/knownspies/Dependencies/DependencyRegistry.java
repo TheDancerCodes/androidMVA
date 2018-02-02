@@ -11,6 +11,7 @@ import com.thedancercodes.knownspies.Activities.SecretDetails.SecretDetailsPrese
 import com.thedancercodes.knownspies.Activities.SpyList.SpyListActivity;
 import com.thedancercodes.knownspies.Activities.SpyList.SpyListPresenter;
 import com.thedancercodes.knownspies.Activities.SpyList.SpyListPresenterImpl;
+import com.thedancercodes.knownspies.Coordinators.RootCoordinator;
 import com.thedancercodes.knownspies.Helpers.Constants;
 import com.thedancercodes.knownspies.ModelLayer.Database.DataLayer;
 import com.thedancercodes.knownspies.ModelLayer.Database.DataLayerImpl;
@@ -42,6 +43,12 @@ public class DependencyRegistry {
   public Realm newRealmInstanceOnCurrentThread() {
     return Realm.getInstance(realm.getConfiguration());
   }
+
+  //endregion
+
+  //region Coordinators
+
+  RootCoordinator rootCoordinator = new RootCoordinator();
 
   //endregion
 
@@ -78,19 +85,19 @@ public class DependencyRegistry {
     int spyId = idFromBundle(bundle);
 
     SpyDetailsPresenter presenter = new SpyDetailsPresenterImpl(spyId, activity, modelLayer);
-    activity.configureWith(presenter);
+    activity.configureWith(presenter, rootCoordinator);
   }
 
   public void inject(SecretDetailsActivity activity, Bundle bundle) throws NoSuchElementException {
     int spyId = idFromBundle(bundle);
 
     SecretDetailsPresenter presenter = new SecretDetailsPresenterImpl(spyId, modelLayer);
-    activity.configureWith(presenter);
+    activity.configureWith(presenter, rootCoordinator);
   }
 
   public void inject(SpyListActivity activity)  {
     SpyListPresenter presenter = new SpyListPresenterImpl(modelLayer);
-    activity.configureWith(presenter);
+    activity.configureWith(presenter,rootCoordinator );
   }
 
   //endregion

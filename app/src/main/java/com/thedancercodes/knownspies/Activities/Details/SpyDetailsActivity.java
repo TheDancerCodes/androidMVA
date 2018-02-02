@@ -1,20 +1,19 @@
 package com.thedancercodes.knownspies.Activities.Details;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.thedancercodes.knownspies.Activities.SecretDetails.SecretDetailsActivity;
+import com.thedancercodes.knownspies.Coordinators.RootCoordinator;
 import com.thedancercodes.knownspies.Dependencies.DependencyRegistry;
-import com.thedancercodes.knownspies.Helpers.Constants;
 import com.thedancercodes.knownspies.R;
 
 public class SpyDetailsActivity extends AppCompatActivity {
 
     private SpyDetailsPresenter presenter;
+    private RootCoordinator coordinator;
     private ImageView profileImage;
     private TextView  nameTextView;
     private TextView  ageTextView;
@@ -47,8 +46,9 @@ public class SpyDetailsActivity extends AppCompatActivity {
 
     //region Injection Methods
 
-    public void configureWith(SpyDetailsPresenter presenter) {
+    public void configureWith(SpyDetailsPresenter presenter, RootCoordinator coordinator) {
         this.presenter = presenter;
+        this.coordinator = coordinator;
 
         ageTextView.setText(presenter.getAge());
         nameTextView.setText(presenter.getName());
@@ -64,13 +64,7 @@ public class SpyDetailsActivity extends AppCompatActivity {
     private void gotoSecretDetails() {
         if (presenter == null) return;
 
-        Bundle bundle = new Bundle();
-               bundle.putInt(Constants.spyIdKey, presenter.getSpyId());
-
-        Intent intent = new Intent(SpyDetailsActivity.this, SecretDetailsActivity.class);
-               intent.putExtras(bundle);
-
-        startActivity(intent);
+        coordinator.handleSecretButtonTapped(this, presenter.getSpyId());
     }
 
   //endregion

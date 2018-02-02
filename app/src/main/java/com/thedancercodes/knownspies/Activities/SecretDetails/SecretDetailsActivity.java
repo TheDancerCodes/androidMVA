@@ -9,12 +9,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.thedancercodes.knownspies.Activities.SpyList.SpyListActivity;
+import com.thedancercodes.knownspies.Coordinators.RootCoordinator;
 import com.thedancercodes.knownspies.Dependencies.DependencyRegistry;
 import com.thedancercodes.knownspies.R;
 
 public class SecretDetailsActivity extends AppCompatActivity {
 
     SecretDetailsPresenter presenter;
+    private RootCoordinator coordinator;
 
     ProgressBar progressBar;
     TextView crackingLabel;
@@ -33,8 +35,9 @@ public class SecretDetailsActivity extends AppCompatActivity {
     }
 
     // Set up the UI according to when we get a SecretDetailsPresenter
-    public void configureWith(SecretDetailsPresenter presenter) {
+    public void configureWith(SecretDetailsPresenter presenter, RootCoordinator coordinator) {
         this.presenter = presenter;
+        this.coordinator = coordinator;
 
         this.presenter.crackPassword(password -> {
           progressBar.setVisibility(View.GONE);
@@ -56,9 +59,8 @@ public class SecretDetailsActivity extends AppCompatActivity {
     //region User Interaction
 
     private void finishedClicked() {
-        Intent intent = new Intent(this, SpyListActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        startActivity(intent);
+
+        coordinator.handleFinishedClicked(this);
     }
 
     //endregion
